@@ -1,10 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios"
+import { setAuthHeader } from "../auth/operations";
 
-axios.defaults.baseURL = "https://66179a09ed6b8fa43483286e.mockapi.io"
+axios.defaults.baseURL = "https://connections-api.herokuapp.com"
 export const fetchContacts = createAsyncThunk("contacts/fetchAll",
     async (_, thunkAPI) => {
+        const state = thunkAPI.getState();
+        const persistedToken = state.auth.token;
+        if (persistedToken === null) {
+            return thunkAPI.rejectWithValue('Unable to fetch contacts');
+        }
         try {
+            setAuthHeader(persistedToken)
             const response = await axios.get("/contacts")
             return response.data
         } catch (error) {
