@@ -1,15 +1,18 @@
 import { NavLink } from "react-router-dom";
 import css from "./Navigation.module.css"
 import clsx from 'clsx'
+import { useSelector } from 'react-redux'
+import { selectToken } from '../../redux/auth/selectors'
 
 const buildLinkClass = ({ isActive }) => {
   return clsx(css.link, isActive && css.active);
 }
 export default function Navigation() {
+    const isLoggedIn = useSelector(selectToken) !== null
     return (
         <nav className={css.nav}>
             <NavLink to={"/"} className={buildLinkClass}>Home</NavLink>
-            <NavLink to={"/contacts"} className={buildLinkClass}>Contacts</NavLink>
+            {isLoggedIn && <NavLink to={"/contacts"} className={buildLinkClass}>Contacts</NavLink>}
         </nav>
     )
 }
